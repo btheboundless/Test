@@ -1,0 +1,42 @@
+<html>
+
+<body>
+    <div id="mapdiv"></div>
+    <script src="http://www.openlayers.org/api/OpenLayers.js"></script>
+    <script>
+        map = new OpenLayers.Map("mapdiv");
+        map.addLayer(new OpenLayers.Layer.OSM());
+
+        var lonLat = new OpenLayers.LonLat(72.8311, 21.1702)
+            .transform(
+                new OpenLayers.Projection("EPSG:4326"), // transform from WGS 1984
+                map.getProjectionObject() // to Spherical Mercator Projection
+            );
+
+        var zoom = 10;
+        var markers = new OpenLayers.Layer.Markers("Markers");
+        map.addLayer(markers);
+
+        var size = new OpenLayers.Size(25, 25);
+        var offset = new OpenLayers.Pixel(-(size.w / 2), -size.h);
+        var icon = new OpenLayers.Icon('http://maps.google.com/mapfiles/ms/icons/red-dot.png', size, offset);
+        markers.addMarker(new OpenLayers.Marker(lonLat, icon));
+
+        map.setCenter(lonLat, zoom);
+
+        var popup = new OpenLayers.Popup.FramedCloud(
+            "Popup",
+            lonLat,
+            new OpenLayers.Size(100, 100),
+            "Welcome to Surat",
+            null,
+            true
+        );
+        map.addPopup(popup);
+
+        
+
+    </script>
+</body>
+
+</html>
