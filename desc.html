@@ -4,8 +4,9 @@
 <head>
     <meta charset="utf-8" />
     <title>Display a map</title>
+    <link rel="shortcut icon" href="">
+    <script src='https://code.jquery.com/jquery-1.11.0.min.js'></script>
     <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no" />
-    <script type="text/javascript" src="City.json"></script>
     <script src="https://api.mapbox.com/mapbox-gl-js/v1.12.0/mapbox-gl.js"></script>
     <link href="https://api.mapbox.com/mapbox-gl-js/v1.12.0/mapbox-gl.css" rel="stylesheet" />
     <style>
@@ -28,48 +29,76 @@
     <script>
 
         var cities = [
-            "Agra",
-            "Ahmedabad",
-            "Bilaspur",
-            "Chandigarh",
-            "Chennai",
-            "Jhansi",
-            "Jodhpur",
-            "Mount Abu",
-            "Mumbai",
-            "Nashik",
-            "Navsari",
-            "Nawabganj",
-            "Porbandar",
-            "Port Blair",
-            "Saharanpur",
-            "Sahibganj",
-            "Shillong",
-            "Shimla",
-            "Srinagar",
-            "Surat",
-            "Udaipur",
-            "Ujjain",
-            "Vadodara",
-            "Valsad",
-            "Vapi"
+            // "Agra",
+            // "Ahmedabad",
+            // "Bilaspur",
+            // "Bengaluru",
+            // "Chandigarh",
+            // "Chennai",
+            // "Jhansi",
+            // "Jodhpur",
+            // "Jammu",
+            // "Jaipur",
+            // "Mount Abu",
+            // "Mumbai",
+            // "Nashik",
+            // "Navsari",
+            // "Nawabganj",
+            // "Porbandar",
+            // "Port Blair",
+            // "Saharanpur",
+            // "Sahibganj",
+            // "Shillong",
+            // "Shimla",
+            // "Surat",
+            // "Udaipur",
+            // "Ujjain",
+            // "Vadodara",
+            // "Valsad",
+            // "Vapi",
+            "Leh India"
         ];
-//J2iWtefylZhquEdi9mKXzxZhA5hlYcByceNXCerATkI    here maps api javascript
+        //J2iWtefylZhquEdi9mKXzxZhA5hlYcByceNXCerATkI    here maps api javascript
 
-        mapboxgl.accessToken = '';
+        mapboxgl.accessToken = 'pk.eyJ1IjoiYmhhdmVzaGtwYXRlbDc3IiwiYSI6ImNrYXFuaXRhODAxanIzMW9jZGF3eDFpbjYifQ.j_HyVmEGWaqNVfRgTSkfqg';
         var map = new mapboxgl.Map({
             container: 'map', // container id
             style: 'mapbox://styles/mapbox/streets-v11', // style URL
-            center: [72.8311, 21.1702], // starting position [lng, lat]
-            zoom: 7 // starting zoom
+            center: [78.9629, 20.5937], // starting position [lng, lat]
+            zoom: 5 // starting zoom
         });
 
+        function GetLatLong(PlaceName) {
+            $.ajax({
+                url: 'https://geocoder.ls.hereapi.com/6.2/geocode.json',
+                type: 'GET',
+                dataType: 'jsonp',
+                jsonp: 'jsoncallback',
+                data: {
+                    searchtext: PlaceName,
+                    gen: '9',
+                    apiKey: 'J2iWtefylZhquEdi9mKXzxZhA5hlYcByceNXCerATkI'
+                },
+                success: function (data) {
+                    //alert(JSON.stringify(data));
 
-        cities.forEach(city => {
-            
-        });
+                    var marker = new mapboxgl.Marker()
+                        .setLngLat([parseFloat(data.Response.View[0].Result[0].Location.DisplayPosition.Longitude), parseFloat(data.Response.View[0].Result[0].Location.DisplayPosition.Latitude)])
+                        .addTo(map);
 
+                    // setMarkerColor(marker, color);
+                }
+            });
+        }
 
+        function DrawMarkers() {
+            cities.forEach(city => {
+                // console.log(city);
+                GetLatLong(city);
+            });
+        }
+
+        $(DrawMarkers);
     </script>
 
 </body>
