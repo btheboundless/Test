@@ -29,35 +29,46 @@
     <script>
 
         var cities = [
-            // "Agra",
-            // "Ahmedabad",
-            // "Bilaspur",
-            // "Bengaluru",
-            // "Chandigarh",
-            // "Chennai",
-            // "Jhansi",
-            // "Jodhpur",
-            // "Jammu",
-            // "Jaipur",
-            // "Mount Abu",
-            // "Mumbai",
-            // "Nashik",
-            // "Navsari",
-            // "Nawabganj",
-            // "Porbandar",
-            // "Port Blair",
-            // "Saharanpur",
-            // "Sahibganj",
-            // "Shillong",
-            // "Shimla",
-            // "Surat",
-            // "Udaipur",
-            // "Ujjain",
-            // "Vadodara",
-            // "Valsad",
-            // "Vapi",
+            "Agra",
+            "Ahmedabad",
+            "Bilaspur",
+            "Bengaluru",
+            "Chandigarh",
+            "Chennai",
+            "Jhansi",
+            "Jodhpur",
+            "Jammu",
+            "Jaipur",
+            "Mount Abu",
+            "Mumbai",
+            "Nashik",
+            "Nawabganj",
+            "Porbandar",
+            "Port Blair",
+            "Saharanpur",
+            "Sahibganj",
+            "Shillong",
+            "Shimla",
+            "Surat",
+            "Udaipur",
+            "Ujjain",
+            "Vadodara",
+            "Valsad",
             "Leh India"
         ];
+
+        var markerHeight = 50, markerRadius = 10, linearOffset = 25;
+        var popupOffsets = {
+            'top': [0, 0],
+            'top-left': [0, 0],
+            'top-right': [0, 0],
+            'bottom': [0, -markerHeight],
+            'bottom-left': [linearOffset, (markerHeight - markerRadius + linearOffset) * -1],
+            'bottom-right': [-linearOffset, (markerHeight - markerRadius + linearOffset) * -1],
+            'left': [markerRadius, (markerHeight - markerRadius) * -1],
+            'right': [-markerRadius, (markerHeight - markerRadius) * -1]
+        };
+
         //J2iWtefylZhquEdi9mKXzxZhA5hlYcByceNXCerATkI    here maps api javascript
 
         mapboxgl.accessToken = 'pk.eyJ1IjoiYmhhdmVzaGtwYXRlbDc3IiwiYSI6ImNrYXFuaXRhODAxanIzMW9jZGF3eDFpbjYifQ.j_HyVmEGWaqNVfRgTSkfqg';
@@ -65,7 +76,7 @@
             container: 'map', // container id
             style: 'mapbox://styles/mapbox/streets-v11', // style URL
             center: [78.9629, 20.5937], // starting position [lng, lat]
-            zoom: 5 // starting zoom
+            zoom: 4 // starting zoom
         });
 
         function GetLatLong(PlaceName) {
@@ -82,10 +93,20 @@
                 success: function (data) {
                     //alert(JSON.stringify(data));
 
-                    var marker = new mapboxgl.Marker()
-                        .setLngLat([parseFloat(data.Response.View[0].Result[0].Location.DisplayPosition.Longitude), parseFloat(data.Response.View[0].Result[0].Location.DisplayPosition.Latitude)])
-                        .addTo(map);
+                    var Place = data.Response.View[0].Result[0].Location.Address.Label;
+                    var Latitude = data.Response.View[0].Result[0].Location.DisplayPosition.Latitude;
+                    var Longitude = data.Response.View[0].Result[0].Location.DisplayPosition.Longitude;
 
+                    var popup = new mapboxgl.Popup() //{ offset: popupOffsets, className: 'my-class' }
+                        .setLngLat([parseFloat(Longitude), parseFloat(Latitude)])
+                        .setHTML("Label : " + Place + "<br>Latitude : " + Latitude + "<br>Longitude :" + Longitude)
+                        .setMaxWidth("300px");
+
+                    var marker = new mapboxgl.Marker()
+                        .setLngLat([parseFloat(Longitude), parseFloat(Latitude)])
+                        .setPopup(popup)
+                        .addTo(map);
+                    
                     // setMarkerColor(marker, color);
                 }
             });
